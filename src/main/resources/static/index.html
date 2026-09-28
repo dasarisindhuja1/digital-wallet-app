@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Wallet</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap');
+    :root { --ink:#17231f; --muted:#718078; --paper:#eef1eb; --panel:#fbfcf9; --line:#d9e1da; --accent:#e56d4f; --green:#286b57; --mint:#dcece2; --shadow:0 20px 55px rgba(29,53,43,.08); }
+    * { box-sizing:border-box; } body { min-height:100vh; margin:0; color:var(--ink); background:linear-gradient(135deg,#f7f8f3 0%,#e7eee8 55%,#dce8df 100%); font:15px 'Manrope',sans-serif; }
+    body::before { position:fixed; z-index:-1; inset:0; opacity:.3; content:''; background-image:linear-gradient(rgba(40,107,87,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(40,107,87,.05) 1px,transparent 1px); background-size:42px 42px; mask-image:linear-gradient(to bottom,#000,transparent 75%); }
+    header { position:relative; overflow:hidden; padding:36px max(24px,calc((100% - 1160px)/2)); color:#f6faf6; background:#182f29; } header::after { position:absolute; width:270px; height:270px; right:6%; top:-150px; border:1px solid rgba(218,242,225,.18); border-radius:50%; box-shadow:0 0 0 28px rgba(218,242,225,.04),0 0 0 58px rgba(218,242,225,.04); content:''; }
+    .brandline { display:flex; align-items:center; justify-content:space-between; gap:18px; position:relative; z-index:1; } .eyebrow { margin:0; color:#a8c9b4; font:500 11px 'DM Mono',monospace; letter-spacing:.16em; text-transform:uppercase; } .live { display:flex; align-items:center; gap:8px; color:#b8d6bd; font:500 11px 'DM Mono',monospace; letter-spacing:.08em; text-transform:uppercase; } .live::before { width:7px; height:7px; border-radius:50%; background:#9ad29e; box-shadow:0 0 0 5px rgba(154,210,158,.12); content:''; }
+    h1,h2,h3,p { margin:0; } h1 { max-width:760px; margin-top:28px; font:500 clamp(2.7rem,6vw,5.9rem)/.95 'Playfair Display',serif; letter-spacing:-.04em; } .subtitle { max-width:530px; margin-top:18px; color:#bed2c3; font-size:15px; line-height:1.65; }
+    main { max-width:1160px; margin:0 auto; padding:0 24px 60px; } .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:-1px; overflow:hidden; border:1px solid var(--line); border-top:0; border-radius:0 0 12px 12px; background:var(--line); box-shadow:var(--shadow); } .metric { padding:19px 22px; background:rgba(251,252,249,.94); } .metric-label { color:var(--muted); font:500 10px 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; } .metric-value { display:block; margin-top:7px; font:600 24px 'DM Mono',monospace; }
+    .workspace { display:grid; grid-template-columns:.85fr 1.15fr; gap:18px; margin-top:34px; } section { min-width:0; padding:25px; border:1px solid rgba(210,221,213,.9); border-radius:12px; background:rgba(251,252,249,.9); box-shadow:0 10px 30px rgba(29,53,43,.04); } .wide { grid-column:1/-1; } .section-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--line); } .section-kicker { margin-bottom:6px; color:var(--green); font:500 10px 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; } h2 { font:600 22px 'Playfair Display',serif; } .section-note { max-width:230px; color:var(--muted); font-size:12px; line-height:1.5; text-align:right; }
+    .menu { display:flex; align-items:center; gap:6px; margin-top:28px; padding:6px; border:1px solid var(--line); border-radius:10px; background:rgba(251,252,249,.8); box-shadow:0 8px 22px rgba(29,53,43,.04); } .menu-label { padding:0 14px 0 10px; color:var(--muted); font:500 10px 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; } .menu-button { width:auto; margin:0; padding:11px 16px; border:0; border-radius:6px; background:transparent; color:var(--muted); font-size:11px; } .menu-button:hover { background:var(--mint); color:var(--ink); transform:none; } .menu-button.active { background:var(--ink); color:#fff; }
+    .view { display:none; margin-top:26px; } .view.active { display:block; animation:fade-in .25s ease-out; } @keyframes fade-in { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+    label { display:block; margin:17px 0 7px; color:var(--muted); font:500 10px 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; } input { width:100%; padding:12px 13px; border:1px solid var(--line); border-radius:7px; outline:none; background:#fff; color:var(--ink); font:15px 'Manrope',sans-serif; transition:border-color .2s,box-shadow .2s; } input::placeholder { color:#a4b0aa; } input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(40,107,87,.12); } button { width:100%; margin-top:21px; padding:13px 16px; border:0; border-radius:7px; background:var(--ink); color:#fff; cursor:pointer; font:600 11px 'DM Mono',monospace; letter-spacing:.1em; text-transform:uppercase; transition:background .2s,transform .2s; } button:hover { background:var(--green); transform:translateY(-1px); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:12px; margin-top:20px; } .wallet { position:relative; overflow:hidden; padding:18px; border:1px solid #cfe1d4; border-radius:9px; background:linear-gradient(135deg,#edf7ef,#dcece2); } .wallet::after { position:absolute; right:-25px; bottom:-40px; width:100px; height:100px; border:1px solid rgba(40,107,87,.17); border-radius:50%; box-shadow:0 0 0 14px rgba(40,107,87,.05); content:''; } .wallet strong { display:block; font:600 14px 'DM Mono',monospace; } .balance { display:block; margin-top:12px; color:var(--green); font:500 25px 'DM Mono',monospace; }
+    .table-wrap { overflow:auto; } table { width:100%; min-width:650px; border-collapse:collapse; margin-top:19px; font-size:12px; } th,td { padding:13px 10px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; } th { color:var(--muted); font:500 10px 'DM Mono',monospace; letter-spacing:.08em; text-transform:uppercase; } td:first-child { color:var(--green); font-family:'DM Mono',monospace; } .status { min-height:21px; margin-top:15px; color:var(--green); font-size:12px; } .status.error { color:var(--accent); }
+    @media (max-width:760px) { header { padding:28px 20px 34px; } .brandline { align-items:flex-start; flex-direction:column; } h1 { margin-top:36px; } main { padding:0 16px 40px; } .metrics { grid-template-columns:1fr; border-radius:0 0 10px 10px; } .metric { padding:14px 18px; } .menu { align-items:stretch; flex-wrap:wrap; } .menu-label { width:100%; padding:5px 10px; } .menu-button { flex:1 1 42%; } .workspace { margin-top:22px; } .wide { grid-column:auto; } section { padding:20px; } .section-note { display:none; } }
+  </style>
+</head>
+<body>
+<header><div class="brandline"><p class="eyebrow">Northstar / treasury console</p><span class="live">Ledger online</span></div><h1>Money, with a memory.</h1><p class="subtitle">A clear view of every wallet, every movement, and the immutable record behind it.</p></header>
+<main>
+  <div class="metrics"><div class="metric"><span class="metric-label">System</span><strong class="metric-value">99.99%</strong></div><div class="metric"><span class="metric-label">Ledger mode</span><strong class="metric-value">Replayable</strong></div><div class="metric"><span class="metric-label">Settlement</span><strong class="metric-value">Atomic</strong></div></div>
+  <nav class="menu" aria-label="Wallet sections"><span class="menu-label">Navigate</span><button class="menu-button active" data-view="overview">Overview</button><button class="menu-button" data-view="account">New account</button><button class="menu-button" data-view="transfer">Transfer</button><button class="menu-button" data-view="audit">Audit trail</button></nav>
+  <div class="workspace">
+    <div id="overview" class="view active"><section><div class="section-head"><div><p class="section-kicker">Overview / Live balances</p><h2>Current state</h2></div><p class="section-note">Read-only projection of the latest ledger state.</p></div><div id="wallets" class="grid"></div></section></div>
+    <div id="account" class="view"><section><div class="section-head"><div><p class="section-kicker">01 / New record</p><h2>Open account</h2></div><p class="section-note">Start a wallet with a USD opening balance.</p></div><form id="createForm"><label for="accountId">Account ID</label><input id="accountId" required placeholder="alice"><label for="openingBalance">Opening balance</label><input id="openingBalance" required type="number" min="0" step="0.01" placeholder="500.00"><button>Create wallet</button></form><div id="createStatus" class="status"></div></section></div>
+    <div id="transfer" class="view"><section><div class="section-head"><div><p class="section-kicker">02 / Move value</p><h2>Balance transfer</h2></div><p class="section-note">Each transfer is protected by a unique idempotency key.</p></div><form id="transferForm"><label for="fromAccount">From account</label><input id="fromAccount" required placeholder="alice"><label for="toAccount">To account</label><input id="toAccount" required placeholder="bob"><label for="amount">Amount</label><input id="amount" required type="number" min="0.01" step="0.01" placeholder="25.00"><label for="transactionId">Idempotency key</label><input id="transactionId" required placeholder="order-1001"><label for="currency">Currency</label><input id="currency" value="USD" required maxlength="3"><button>Transfer funds</button></form><div id="transferStatus" class="status"></div></section></div>
+    <div id="audit" class="view"><section><div class="section-head"><div><p class="section-kicker">04 / Audit trail</p><h2>Immutable transfer history</h2></div><p class="section-note">Every movement remains available for verification.</p></div><div class="table-wrap"><table><thead><tr><th>Transaction</th><th>Route</th><th>Amount</th><th>Currency</th><th>Created</th></tr></thead><tbody id="transactions"></tbody></table></div><div id="replay" class="status"></div></section></div>
+  </div>
+</main>
+<script>
+  const api = '/v1/wallet';
+  const json = options => fetch(api + options.path, { headers: {'Content-Type':'application/json'}, ...options }).then(async response => {
+    const raw = await response.text();
+    let body = {};
+    try { body = raw ? JSON.parse(raw) : {}; } catch { body = {detail: raw}; }
+    if (!response.ok) {
+      const reason = body.message || body.detail || body.error || response.statusText || 'Request failed';
+      throw new Error(`Failed (${response.status}): ${reason}`);
+    }
+    return body;
+  }).catch(error => {
+    if (error instanceof TypeError) throw new Error('Failed: unable to reach the wallet service');
+    throw error;
+  });
+  const show = (id, text, isError = false) => { const element = document.getElementById(id); element.textContent = text; element.classList.toggle('error', isError); };
+  async function refresh() {
+    const [wallets, transactions, replay] = await Promise.all([json({path:'/wallets'}), json({path:'/transactions'}), json({path:'/replay'})]);
+    document.getElementById('wallets').innerHTML = wallets.map(wallet => `<article class="wallet"><strong>${escapeHtml(wallet.accountId)}</strong><span class="balance">${Number(wallet.balance).toFixed(2)}</span></article>`).join('') || '<p>No wallets yet.</p>';
+    document.getElementById('transactions').innerHTML = transactions.map(tx => `<tr><td>${escapeHtml(tx.transactionId)}</td><td>${escapeHtml(tx.fromAccount)} → ${escapeHtml(tx.toAccount)}</td><td>${Number(tx.amount).toFixed(2)}</td><td>${escapeHtml(tx.currency)}</td><td>${new Date(tx.createdAt).toLocaleString()}</td></tr>`).join('') || '<tr><td colspan="5">No transfers yet.</td></tr>';
+    show('replay', `Replay verified from ${replay.eventCount} immutable event(s).`);
+  }
+  function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character])); }
+  document.querySelectorAll('.menu-button').forEach(button => button.addEventListener('click', () => {
+    document.querySelectorAll('.menu-button').forEach(item => item.classList.toggle('active', item === button));
+    document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === button.dataset.view));
+  }));
+  document.getElementById('createForm').addEventListener('submit', async event => { event.preventDefault(); try { const body = {accountId: accountId.value, openingBalance: openingBalance.value}; await json({path:'/wallets', method:'POST', body:JSON.stringify(body)}); show('createStatus','Wallet created.'); event.target.reset(); await refresh(); } catch (error) { show('createStatus', error.message, true); } });
+  document.getElementById('transferForm').addEventListener('submit', async event => { event.preventDefault(); try { const body = {fromAccount:fromAccount.value, toAccount:toAccount.value, amount:amount.value, currency:currency.value, transactionId:transactionId.value}; const result = await json({path:'/balance_transfer', method:'POST', body:JSON.stringify(body)}); show('transferStatus', `Transfer ${result.transactionId} committed.`); event.target.reset(); currency.value='USD'; await refresh(); } catch (error) { show('transferStatus', error.message, true); } });
+  refresh().catch(error => show('replay', error.message, true));
+</script>
+</body>
+</html>
