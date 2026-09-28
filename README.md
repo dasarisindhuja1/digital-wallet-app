@@ -45,7 +45,7 @@ To run two wallet application instances behind Nginx with shared PostgreSQL stor
 docker compose up --build
 ```
 
-Open <http://localhost:8080>. Requests go through Nginx and are distributed between `wallet-1` and `wallet-2`. Both instances use the same PostgreSQL database, and transfer operations lock both wallet rows during the transaction to prevent concurrent balance updates.
+Open <http://localhost:8081>. Requests go through Nginx and are distributed between `wallet-1` and `wallet-2`. Both instances use the same PostgreSQL database, and transfer operations lock both wallet rows during the transaction to prevent concurrent balance updates. Set `WALLET_PORT=8080` if port 8080 is available.
 
 Stop the deployment with:
 
