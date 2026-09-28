@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: walletdb
+      POSTGRES_USER: wallet
+      POSTGRES_PASSWORD: wallet_dev_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wallet -d walletdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  wallet-1:
+    build: .
+    environment: &wallet-env
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/walletdb
+      SPRING_DATASOURCE_DRIVER: org.postgresql.Driver
+      SPRING_DATASOURCE_USERNAME: wallet
+      SPRING_DATASOURCE_PASSWORD: wallet_dev_password
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  wallet-2:
+    build: .
+    environment: *wallet-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  load-balancer:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - wallet-1
+      - wallet-2
+
+volumes:
+  postgres_data:

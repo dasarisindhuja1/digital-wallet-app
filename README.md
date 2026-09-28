@@ -37,6 +37,24 @@ Open <http://localhost:8080> in a browser.
 
 The local H2 database is stored under `data/`, which is ignored by Git. Delete that directory to reset local wallet data.
 
+## Run with a load balancer
+
+To run two wallet application instances behind Nginx with shared PostgreSQL storage:
+
+```bash
+docker compose up --build
+```
+
+Open <http://localhost:8080>. Requests go through Nginx and are distributed between `wallet-1` and `wallet-2`. Both instances use the same PostgreSQL database, and transfer operations lock both wallet rows during the transaction to prevent concurrent balance updates.
+
+Stop the deployment with:
+
+```bash
+docker compose down
+```
+
+Add `-v` only when you intentionally want to delete the PostgreSQL volume and all stored wallet data.
+
 ## API
 
 All API routes use the `/v1/wallet` prefix.
@@ -118,7 +136,7 @@ Common statuses include `400` for invalid input, `404` for missing accounts, `40
 
 ## Architecture notes
 
-The application uses Spring Web, Spring Data JPA, and H2 by default. Wallet balances are projections, while `WalletEvent` records provide an append-only history used by the replay endpoint. This repository is a development-scale implementation; Kafka, Raft replication, sharding, distributed transaction orchestration, authentication, and production observability are not included.
+The application uses Spring Web and Spring Data JPA. H2 is the default for local single-instance development; the Compose deployment uses PostgreSQL as shared storage. Wallet balances are projections, while `WalletEvent` records provide an append-only history used by the replay endpoint. This repository is a development-scale implementation; Kafka, Raft replication, sharding, distributed transaction orchestration, authentication, and production observability are not included.
 
 ## Tests
 

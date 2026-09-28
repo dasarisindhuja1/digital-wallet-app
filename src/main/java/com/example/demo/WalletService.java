@@ -61,9 +61,9 @@ public class WalletService {
         if (fromId.equals(toId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Accounts must be different");
         }
-        Wallet from = walletRepository.findById(fromId)
+        Wallet from = walletRepository.findByIdForUpdate(fromId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Source account not found"));
-        Wallet to = walletRepository.findById(toId)
+        Wallet to = walletRepository.findByIdForUpdate(toId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Destination account not found"));
         if (from.balance.compareTo(request.amount()) < 0) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Insufficient funds");
